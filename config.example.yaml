@@ -1,0 +1,33 @@
+timezone: "Asia/Kolkata"
+market:
+  start: "09:15"
+  end: "15:30"
+  days_open: [1, 2, 3, 4, 5]   # Mon=1 ... Sun=7
+screener:
+  timeframe: "15m"
+  lookback_bars: 300
+  batch_size: 8
+  max_workers: 4
+strategy:
+  rsi_period: 14
+  rsi_entry: 50
+  rsi_exit: 50
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  obv_lookback: 10
+  volosc_fast: 14
+  volosc_slow: 28
+  min_volosc: 0.0
+risk:
+  stop_pct: 0.01
+  take_pct: 0.02
+backtest:
+  fee_bps: 5         # 0.05%
+  slippage_bps: 5    # 0.05%
+broker:
+  kite:
+    enabled: false
+    api_key: "YOUR_API_KEY"
+    api_secret: "YOUR_API_SECRET"
+    access_token: "YOUR_ACCESS_TOKEN"
