@@ -41,18 +41,31 @@ def _only_market_hours(df: pd.DataFrame) -> pd.DataFrame:
     return df.between_time(cfg.market.start, cfg.market.end, inclusive="both")
 
 def fetch_15m_history(symbol: str, lookback_bars: int | None = None) -> pd.DataFrame:
+    """Fetch 15 minute history for a single symbol.
+
+    Using ``Ticker.history`` avoids a yfinance quirk where ``download`` caches the
+    previous response when multiple requests are issued in quick succession. That
+    manifested as every symbol receiving the exact same raw data in the screener.
+    """
+
     lookback_bars = lookback_bars or cfg.screener.lookback_bars
-    df = yf.download(
-        symbol,
-        interval="15m",
-        period="60d",
-        progress=False,
-        auto_adjust=False,
-        group_by="column",     # ← prevents per-ticker grouping
-        threads=False          # sanity; single symbol anyway
-    )
+    try:
+        ticker = yf.Ticker(symbol)
+        df = ticker.history(
+            interval="15m",
+            period="60d",
+            auto_adjust=False,
+            actions=False,
+        )
+    except Exception:
+        return pd.DataFrame()
     if df is None or df.empty:
         return pd.DataFrame()
+    df = df.copy()
+    # Drop columns we never use (splits/dividends)
+    drop_cols = [c for c in ["Dividends", "Stock Splits", "Capital Gains"] if c in df.columns]
+    if drop_cols:
+        df.drop(columns=drop_cols, inplace=True)
     df = _drop_ticker_level(df)
     df = _to_ist_index(df)
     df = _only_market_hours(df)
