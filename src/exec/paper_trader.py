@@ -136,3 +136,14 @@ def main():
         try:
             run_once()
             time.sleep(SLEEP_SECONDS)
+        except KeyboardInterrupt:
+            print("\nPaper trader stopped by user.")
+            break
+        except Exception as exc:
+            # Don't crash the loop on transient API/IO errors
+            print(f"[{utcnow_iso()}] ERROR: {exc}")
+            time.sleep(SLEEP_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
