@@ -70,7 +70,8 @@ def screen_symbol(sym: str):
     # Dump the signal step (booleans + inputs used to decide)
     if DEBUG_STEPS:
         sig_cols = [
-            "Close", "RSI", "MACD_HIST", "OBV_DELTA", "VO",
+            "Open", "High", "Low", "Close", "Volume",
+            "RSI", "MACD_HIST", "OBV_DELTA", "VO",
             "RSI_CROSS_UP", "MACD_BULL", "OBV_POS", "VO_POS",
             "ENTRY", "RSI_CROSS_DOWN", "EXIT"
         ]
